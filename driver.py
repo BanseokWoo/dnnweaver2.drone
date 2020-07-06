@@ -30,7 +30,7 @@ def run(cam_source, yolo_engine, tf_weight_pickle, dnnweaver2_weight_pickle, in_
     done_q = Queue(maxsize=num_processes) 
 
     # Multiprocessing locks
-    frame_l = Lock()
+    frame_l = Lock() 
     bbox_l = Lock()
     key_l = Lock()
 
