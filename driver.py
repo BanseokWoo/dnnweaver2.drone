@@ -9,8 +9,6 @@ from tensorflow.python.client import device_lib
 
 from util.thread import thread_print
 from key import GetKey
-from drone import drone_control
-from webcam import webcam_control
 from videofile import videofile_control
 from detection import detection
 
@@ -35,13 +33,7 @@ def run(cam_source, yolo_engine, tf_weight_pickle, dnnweaver2_weight_pickle, in_
     key_l = Lock()
 
     # Drone management process
-    if cam_source == "drone": 
-        droneProcess = Process(target=drone_control, args=(frame_q, frame_l, bbox_q, bbox_l, key_q, key_l, kill_q, done_q, ))
-        droneProcess.start()
-    elif cam_source == "webcam": 
-        webcamProcess = Process(target=webcam_control, args=(frame_q, frame_l, bbox_q, bbox_l, kill_q, done_q, )) 
-        webcamProcess.start()
-    elif cam_source == "videofile":
+    if cam_source == "videofile":
         videofileProcess = Process(target=videofile_control, args=(frame_q, frame_l, bbox_q, bbox_l, kill_q, done_q, in_videofile, out_videofile, )) 
         videofileProcess.start()
 
@@ -82,10 +74,6 @@ def run(cam_source, yolo_engine, tf_weight_pickle, dnnweaver2_weight_pickle, in_
 
     # Flush all entires in queueus
     drain_queue([frame_q, bbox_q, kill_q, key_q])
-    if cam_source == "drone":
-        droneProcess.join()
-    elif cam_source == "webcam":
-        webcamProcess.join()
     detectionProcess.join()
 
 def main():
